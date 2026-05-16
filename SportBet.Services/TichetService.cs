@@ -62,19 +62,10 @@ namespace SportBet.Services
         /// <returns>Tichetul creat sau null in caz de eroare.</returns>
         public Tichet PlaseazaTichet(int utilizatorId, List<Pariu> pariuri, decimal miza)
         {
-            if (pariuri == null || pariuri.Count == 0)
-                return null;
-
-            if (miza <= 0)
+            if (!ValidareTichet(utilizatorId, pariuri, miza))
                 return null;
 
             Utilizator utilizator = _utilizatorRepo.GetById(utilizatorId);
-
-            if (utilizator == null || !utilizator.EsteActiv)
-                return null;
-
-            if (!utilizator.AreSuficienteFonduri(miza))
-                return null;
 
             // Scade miza din soldul utilizatorului
             utilizator.Retrage(miza);
@@ -101,18 +92,31 @@ namespace SportBet.Services
         }
 
         /// <summary>
-        /// Returneaza un tichet dupa ID.
+        /// Returneaza detaliile complete ale unui tichet dupa ID,
+        /// cu meciurile asociate incarcate pe fiecare pariu.
         /// </summary>
         /// <param name="tichetId">ID-ul tichetului.</param>
-        /// <returns>Obiectul Tichet sau null daca nu exista.</returns>
+        /// <returns>Obiectul Tichet cu pariurile si meciurile incarcate.</returns>
         public Tichet GetTichetById(int tichetId)
         {
-            return _tichetRepo.GetById(tichetId);
+            Tichet tichet = _tichetRepo.GetById(tichetId);
+
+            if (tichet == null)
+                return null;
+
+            // Incarca MeciAsociat pentru fiecare pariu
+            foreach (Pariu pariu in tichet.Pariuri)
+            {
+                if (pariu.MeciAsociat == null)
+                    pariu.MeciAsociat = _meciRepo.GetById(pariu.MeciId);
+            }
+
+            return tichet;
         }
 
         /// <summary>
         /// Anuleaza un tichet si returneaza miza utilizatorului.
-        /// Posibil doar daca tichetul este inca in asteptare.
+        /// Posibil doar daca toate meciurile sunt inca Programate si nu au inceput.
         /// </summary>
         /// <param name="tichetId">ID-ul tichetului de anulat.</param>
         /// <returns>True daca anularea a reusit, altfel false.</returns>
@@ -125,6 +129,18 @@ namespace SportBet.Services
 
             if (tichet.Status != StatusTichet.InAsteptare)
                 return false;
+
+            // Verifica ca niciun meci nu a inceput inca
+            foreach (Pariu pariu in tichet.Pariuri)
+            {
+                Meci meci = _meciRepo.GetById(pariu.MeciId);
+
+                if (meci == null)
+                    return false;
+
+                if (meci.Status != StatusMeci.Programat || meci.DataOra <= DateTime.Now)
+                    return false;
+            }
 
             // Returneaza miza utilizatorului
             Utilizator utilizator = _utilizatorRepo.GetById(tichet.UtilizatorId);
@@ -170,7 +186,8 @@ namespace SportBet.Services
         /// <returns>True daca decontarea a reusit, altfel false.</returns>
         public bool DeconteazaTichet(int tichetId)
         {
-            Tichet tichet = _tichetRepo.GetById(tichetId);
+            // Incarcam tichetul cu meciurile asociate pentru decontare corecta
+            Tichet tichet = GetTichetById(tichetId);
 
             if (tichet == null)
                 return false;
@@ -228,7 +245,7 @@ namespace SportBet.Services
         /// </summary>
         /// <param name="utilizatorId">ID-ul utilizatorului.</param>
         /// <returns>Valoare intre 0 si 100 reprezentand procentul de succes.</returns>
-        public double GetRataSucces(int utilizatorId)
+        public double GetRataSucses(int utilizatorId)
         {
             List<Tichet> toateTichetele = _tichetRepo.GetByUtilizatorId(utilizatorId);
 
@@ -250,6 +267,51 @@ namespace SportBet.Services
                 return 0.0;
 
             return Math.Round((double)nrCastigate / nrFinalizate * 100, 2);
+        }
+
+        #endregion
+
+        #region Metode private helper
+
+        /// <summary>
+        /// Valideaza un tichet inainte de plasare:
+        /// verifica miza pozitiva, cel putin un pariu, disponibilitatea meciurilor
+        /// si soldul suficient al utilizatorului.
+        /// </summary>
+        /// <param name="utilizatorId">ID-ul utilizatorului.</param>
+        /// <param name="pariuri">Lista de pariuri de validat.</param>
+        /// <param name="miza">Miza de validat.</param>
+        /// <returns>True daca tichetul este valid, altfel false.</returns>
+        private bool ValidareTichet(int utilizatorId, List<Pariu> pariuri, decimal miza)
+        {
+            if (miza <= 0)
+                return false;
+
+            if (pariuri == null || pariuri.Count == 0)
+                return false;
+
+            Utilizator utilizator = _utilizatorRepo.GetById(utilizatorId);
+
+            if (utilizator == null || !utilizator.EsteActiv)
+                return false;
+
+            if (!utilizator.AreSuficienteFonduri(miza))
+                return false;
+
+            // Verifica ca fiecare meci este disponibil pentru pariere
+            foreach (Pariu pariu in pariuri)
+            {
+                Meci meci = _meciRepo.GetById(pariu.MeciId);
+
+                if (meci == null || !meci.EsteDisponibilPariere())
+                    return false;
+
+                // Verifica ca tipul selectiei este valid pentru meciul respectiv
+                if (meci.GetCotaForTip(pariu.TipSelectie) == 0)
+                    return false;
+            }
+
+            return true;
         }
 
         #endregion
