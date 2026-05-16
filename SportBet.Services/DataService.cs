@@ -1,5 +1,5 @@
 // Autor: Echipa SportBet
-// Functionalitate: Serviciu central care incarca datele din fisiere JSON locale
+// Functionalitate: Serviciu central care incarca si salveaza datele din/in fisiere JSON locale
 //                  si initializeaza repository-urile la pornirea aplicatiei.
 
 using System;
@@ -13,7 +13,7 @@ using SportBet.Repositories;
 namespace SportBet.Services
 {
     /// <summary>
-    /// Serviciu central de date care citeste fisierele JSON si
+    /// Serviciu central de date care citeste si scrie fisierele JSON si
     /// populeaza repository-urile la pornirea aplicatiei.
     /// </summary>
     public class DataService
@@ -25,6 +25,9 @@ namespace SportBet.Services
 
         /// <summary>Calea catre fisierul JSON cu meciurile.</summary>
         private const string FISIER_MECIURI = "Data/meciuri.json";
+
+        /// <summary>Calea catre fisierul JSON cu tichetele.</summary>
+        private const string FISIER_TICHETE = "Data/tichete.json";
 
         #endregion
 
@@ -52,7 +55,7 @@ namespace SportBet.Services
 
         #endregion
 
-        #region Metode publice
+        #region Metode publice – Initializare
 
         /// <summary>
         /// Initializeaza serviciul: citeste JSON-urile si populeaza repository-urile.
@@ -69,12 +72,19 @@ namespace SportBet.Services
             foreach (Meci m in IncarcaMeciuri())
                 meciRepo.Add(m);
 
+            foreach (Tichet t in IncarcaTichete())
+                tichetRepo.Add(t);
+
             UtilizatorRepository = utilizatorRepo;
             MeciRepository = meciRepo;
             TichetRepository = tichetRepo;
 
             AuthService.Instanta.Initialize(UtilizatorRepository);
         }
+
+        #endregion
+
+        #region Metode publice – Citire JSON
 
         /// <summary>
         /// Incarca lista de utilizatori din fisierul JSON local.
@@ -108,6 +118,103 @@ namespace SportBet.Services
             {
                 return new List<Meci>();
             }
+        }
+
+        /// <summary>
+        /// Incarca lista de tichete din fisierul JSON local.
+        /// </summary>
+        /// <returns>Lista cu tichetele sau lista goala daca fisierul nu exista.</returns>
+        public List<Tichet> IncarcaTichete()
+        {
+            try
+            {
+                if (!File.Exists(FISIER_TICHETE))
+                    return new List<Tichet>();
+
+                string json = File.ReadAllText(FISIER_TICHETE, Encoding.UTF8);
+                return JsonConvert.DeserializeObject<List<Tichet>>(json);
+            }
+            catch (Exception)
+            {
+                return new List<Tichet>();
+            }
+        }
+
+        #endregion
+
+        #region Metode publice – Salvare JSON
+
+        /// <summary>
+        /// Salveaza lista de utilizatori in fisierul JSON local.
+        /// </summary>
+        /// <param name="utilizatori">Lista de utilizatori de serializat.</param>
+        /// <returns>True daca salvarea a reusit, altfel false.</returns>
+        public bool SalveazaUtilizatori(List<Utilizator> utilizatori)
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(utilizatori, Formatting.Indented);
+                File.WriteAllText(FISIER_UTILIZATORI, json, Encoding.UTF8);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Salveaza lista de meciuri in fisierul JSON local.
+        /// </summary>
+        /// <param name="meciuri">Lista de meciuri de serializat.</param>
+        /// <returns>True daca salvarea a reusit, altfel false.</returns>
+        public bool SalveazaMeciuri(List<Meci> meciuri)
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(meciuri, Formatting.Indented);
+                File.WriteAllText(FISIER_MECIURI, json, Encoding.UTF8);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Salveaza lista de tichete in fisierul JSON local.
+        /// </summary>
+        /// <param name="tichete">Lista de tichete de serializat.</param>
+        /// <returns>True daca salvarea a reusit, altfel false.</returns>
+        public bool SalveazaTichete(List<Tichet> tichete)
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(tichete, Formatting.Indented);
+                File.WriteAllText(FISIER_TICHETE, json, Encoding.UTF8);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Salveaza toate datele (utilizatori, meciuri, tichete) in fisierele JSON.
+        /// Apelat la inchiderea aplicatiei pentru a persista modificarile.
+        /// </summary>
+        /// <returns>True daca toate salvarile au reusit, altfel false.</returns>
+        public bool SalveazaToateDatale()
+        {
+            bool ok = true;
+
+            ok &= SalveazaUtilizatori(UtilizatorRepository.GetAll());
+            ok &= SalveazaMeciuri(MeciRepository.GetAll());
+            ok &= SalveazaTichete(TichetRepository.GetAll());
+
+            return ok;
         }
 
         #endregion
