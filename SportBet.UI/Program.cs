@@ -1,6 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using SportBet.Repositories;
+using SportBet.Services;
 using SportBet.UI;
+using System;
+using System.Windows.Forms;
 
 internal static class Program
 {
@@ -12,6 +14,11 @@ internal static class Program
     {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new Form1());
+
+        var dataService = new DataService();
+        dataService.Initializeaza();
+        var authService = new AuthService(dataService.UtilizatorRepository);
+
+        Application.Run(new FormLogin(authService, dataService));
     }
 }

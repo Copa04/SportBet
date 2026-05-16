@@ -3,9 +3,10 @@
 //                  Stocheaza si gestioneaza utilizatorii in memorie,
 //                  implementand contractul definit de IUtilizatorRepository.
 
+using SportBet.Models;
 using System;
 using System.Collections.Generic;
-using SportBet.Models;
+using System.Linq;
 
 namespace SportBet.Repositories
 {

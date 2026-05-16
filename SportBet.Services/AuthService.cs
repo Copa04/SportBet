@@ -15,29 +15,6 @@ namespace SportBet.Services
     /// </summary>
     public class AuthService
     {
-        #region Singleton
-
-        private static AuthService _instanta;
-        private static readonly object _lock = new object();
-
-        /// <summary>
-        /// Returneaza instanta unica a serviciului de autentificare (Singleton).
-        /// </summary>
-        public static AuthService Instanta
-        {
-            get
-            {
-                lock (_lock)
-                {
-                    if (_instanta == null)
-                        _instanta = new AuthService();
-                    return _instanta;
-                }
-            }
-        }
-
-        #endregion
-
         #region Proprietati
 
         /// <summary>Utilizatorul autentificat in sesiunea curenta. Null daca nu e logat nimeni.</summary>
@@ -55,27 +32,14 @@ namespace SportBet.Services
         /// <summary>
         /// Constructor privat (impus de Singleton).
         /// </summary>
-        private AuthService()
+        public AuthService(IUtilizatorRepository utilizatorRepo)
         {
-            _utilizatorRepo = null;
+            _utilizatorRepo = utilizatorRepo;
         }
 
         #endregion
 
         #region Metode publice
-
-        /// <summary>
-        /// Initializeaza serviciul cu repository-ul necesar.
-        /// Trebuie apelat o singura data, la pornirea aplicatiei.
-        /// </summary>
-        /// <param name="utilizatorRepository">Implementarea repository-ului de utilizatori.</param>
-        public void Initialize(IUtilizatorRepository utilizatorRepository)
-        {
-            if (utilizatorRepository == null)
-                throw new ArgumentNullException("utilizatorRepository");
-
-            _utilizatorRepo = utilizatorRepository;
-        }
 
         /// <summary>
         /// Autentifica un utilizator pe baza username-ului si parolei.
@@ -100,7 +64,7 @@ namespace SportBet.Services
             if (!utilizator.EsteActiv)
                 return false;
 
-            if (utilizator.ParolaCriptata != parola)
+            if (utilizator.Parola != parola)
                 return false;
 
             UtilizatorCurent = utilizator;
@@ -167,13 +131,13 @@ namespace SportBet.Services
             if (string.IsNullOrWhiteSpace(parolaVeche) || string.IsNullOrWhiteSpace(parolaNoua))
                 return false;
 
-            if (UtilizatorCurent.ParolaCriptata != parolaVeche)
+            if (UtilizatorCurent.Parola != parolaVeche)
                 return false;
 
             if (parolaNoua.Length < 6)
                 return false;
 
-            UtilizatorCurent.ParolaCriptata = parolaNoua;
+            UtilizatorCurent.Parola = parolaNoua;
             return _utilizatorRepo.Update(UtilizatorCurent);
         }
 

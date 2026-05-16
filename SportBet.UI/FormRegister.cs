@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SportBet.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,11 +11,14 @@ using System.Windows.Forms;
 
 namespace SportBet.UI
 {
-    public partial class Form1 : Form
+    public partial class FormRegister : Form
     {
-        public Form1()
+        private readonly AuthService _authService;
+
+        public FormRegister(AuthService authService)
         {
             InitializeComponent();
+            _authService = authService;
         }
     }
 }

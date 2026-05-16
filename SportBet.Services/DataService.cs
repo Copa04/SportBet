@@ -21,13 +21,13 @@ namespace SportBet.Services
         #region Constante cai fisiere JSON
 
         /// <summary>Calea catre fisierul JSON cu utilizatorii.</summary>
-        private const string FISIER_UTILIZATORI = "Data/utilizatori.json";
+        private const string FISIER_UTILIZATORI = "Data\\utilizatori.json";
 
         /// <summary>Calea catre fisierul JSON cu meciurile.</summary>
-        private const string FISIER_MECIURI = "Data/meciuri.json";
+        private const string FISIER_MECIURI = "Data\\meciuri.json";
 
         /// <summary>Calea catre fisierul JSON cu tichetele.</summary>
-        private const string FISIER_TICHETE = "Data/tichete.json";
+        private const string FISIER_TICHETE = "Data\\tichete.json";
 
         #endregion
 
@@ -78,8 +78,6 @@ namespace SportBet.Services
             UtilizatorRepository = utilizatorRepo;
             MeciRepository = meciRepo;
             TichetRepository = tichetRepo;
-
-            AuthService.Instanta.Initialize(UtilizatorRepository);
         }
 
         #endregion

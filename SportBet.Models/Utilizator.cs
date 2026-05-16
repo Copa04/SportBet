@@ -21,7 +21,7 @@ namespace SportBet.Models
         public string Username { get; set; }
 
         /// <summary>Parola criptata a utilizatorului.</summary>
-        public string ParolaCriptata { get; set; }
+        public string Parola { get; set; }
 
         /// <summary>Adresa de email a utilizatorului.</summary>
         public string Email { get; set; }
@@ -64,17 +64,17 @@ namespace SportBet.Models
         /// </summary>
         /// <param name="id">Identificatorul unic.</param>
         /// <param name="username">Numele de utilizator.</param>
-        /// <param name="parolaCriptata">Parola deja criptata.</param>
+        /// <param name="parola">Parola.</param>
         /// <param name="email">Adresa de email.</param>
         /// <param name="prenume">Prenumele utilizatorului.</param>
         /// <param name="nume">Numele de familie.</param>
         /// <param name="sold">Soldul initial al contului.</param>
-        public Utilizator(int id, string username, string parolaCriptata,
+        public Utilizator(int id, string username, string parola,
                           string email, string prenume, string nume, decimal sold)
         {
             Id = id;
             Username = username;
-            ParolaCriptata = parolaCriptata;
+            Parola = parola;
             Email = email;
             Prenume = prenume;
             Nume = nume;
