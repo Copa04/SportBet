@@ -94,7 +94,15 @@ namespace SportBet.Models
         /// <returns>True daca selectia corespunde rezultatului, altfel false.</returns>
         public bool VerificaCastig()
         {
-            throw new NotImplementedException();
+            if (MeciAsociat == null)
+                return false;
+
+            string rezultat = MeciAsociat.GetRezultat();
+
+            if (rezultat == null)
+                return false;
+
+            return string.Equals(TipSelectie, rezultat, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -102,7 +110,22 @@ namespace SportBet.Models
         /// </summary>
         public void ActualizeazaStatus()
         {
-            throw new NotImplementedException();
+            if (MeciAsociat == null)
+                throw new InvalidOperationException("Pariul nu are un meci asociat.");
+
+            if (MeciAsociat.Status == StatusMeci.Anulat)
+            {
+                Status = StatusPariu.Returnat;
+                return;
+            }
+
+            if (MeciAsociat.Status != StatusMeci.Finalizat)
+            {
+                Status = StatusPariu.InAsteptare;
+                return;
+            }
+
+            Status = VerificaCastig() ? StatusPariu.Castigat : StatusPariu.Pierdut;
         }
 
         /// <summary>
@@ -111,7 +134,20 @@ namespace SportBet.Models
         /// <returns>String cu descrierea selectiei.</returns>
         public string GetDescriereSelectie()
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(TipSelectie))
+                return "Selectie necunoscuta";
+
+            switch (TipSelectie.Trim().ToUpper())
+            {
+                case "1":
+                    return "Victorie gazda";
+                case "X":
+                    return "Egal";
+                case "2":
+                    return "Victorie oaspete";
+                default:
+                    return "Selectie necunoscuta";
+            }
         }
 
         /// <summary>
@@ -120,7 +156,10 @@ namespace SportBet.Models
         /// <returns>String cu informatiile principale ale pariurilor.</returns>
         public override string ToString()
         {
-            throw new NotImplementedException();
+            string meci = MeciAsociat != null ? MeciAsociat.GetDenumireMeci() : "Meci necunoscut";
+
+            return string.Format("#{0} | {1} | Selectie: {2} ({3}) | Cota: {4:0.00} | Status: {5}",
+                Id, meci, TipSelectie, GetDescriereSelectie(), Cota, Status);
         }
 
         #endregion
