@@ -53,7 +53,7 @@ namespace SportBet.Services
         #region Metode publice – Gestionare tichete
 
         /// <summary>
-        /// Plaseaza un tichet nou pentru utilizatorul curent.
+        /// Plaseaza un tichet nou pentru utilizatorul dat.
         /// Verifica soldul disponibil, scade miza si salveaza tichetul.
         /// </summary>
         /// <param name="utilizatorId">ID-ul utilizatorului care plaseaza.</param>
@@ -62,7 +62,32 @@ namespace SportBet.Services
         /// <returns>Tichetul creat sau null in caz de eroare.</returns>
         public Tichet PlaseazaTichet(int utilizatorId, List<Pariu> pariuri, decimal miza)
         {
-            throw new NotImplementedException();
+            if (pariuri == null || pariuri.Count == 0)
+                return null;
+
+            if (miza <= 0)
+                return null;
+
+            Utilizator utilizator = _utilizatorRepo.GetById(utilizatorId);
+
+            if (utilizator == null || !utilizator.EsteActiv)
+                return null;
+
+            if (!utilizator.AreSuficienteFonduri(miza))
+                return null;
+
+            // Scade miza din soldul utilizatorului
+            utilizator.Retrage(miza);
+            _utilizatorRepo.ActualizeazaSold(utilizatorId, utilizator.Sold);
+
+            // Construieste tichetul (Id = 0, repository-ul genereaza automat)
+            Tichet tichet = new Tichet(0, utilizatorId, miza);
+
+            foreach (Pariu pariu in pariuri)
+                tichet.AdaugaPariu(pariu);
+
+            _tichetRepo.Add(tichet);
+            return tichet;
         }
 
         /// <summary>
@@ -72,27 +97,46 @@ namespace SportBet.Services
         /// <returns>Lista cu tichetele utilizatorului.</returns>
         public List<Tichet> GetTicheteUtilizator(int utilizatorId)
         {
-            throw new NotImplementedException();
+            return _tichetRepo.GetByUtilizatorId(utilizatorId);
         }
 
         /// <summary>
-        /// Returneaza detaliile complete ale unui tichet dupa ID.
+        /// Returneaza un tichet dupa ID.
         /// </summary>
         /// <param name="tichetId">ID-ul tichetului.</param>
-        /// <returns>Obiectul Tichet cu pariurile si meciurile incarcate.</returns>
+        /// <returns>Obiectul Tichet sau null daca nu exista.</returns>
         public Tichet GetTichetById(int tichetId)
         {
-            throw new NotImplementedException();
+            return _tichetRepo.GetById(tichetId);
         }
 
         /// <summary>
-        /// Anuleaza un tichet si returneaza miza utilizatorului (daca meciul nu a inceput).
+        /// Anuleaza un tichet si returneaza miza utilizatorului.
+        /// Posibil doar daca tichetul este inca in asteptare.
         /// </summary>
         /// <param name="tichetId">ID-ul tichetului de anulat.</param>
         /// <returns>True daca anularea a reusit, altfel false.</returns>
         public bool AnuleazaTichet(int tichetId)
         {
-            throw new NotImplementedException();
+            Tichet tichet = _tichetRepo.GetById(tichetId);
+
+            if (tichet == null)
+                return false;
+
+            if (tichet.Status != StatusTichet.InAsteptare)
+                return false;
+
+            // Returneaza miza utilizatorului
+            Utilizator utilizator = _utilizatorRepo.GetById(tichet.UtilizatorId);
+
+            if (utilizator == null)
+                return false;
+
+            utilizator.Depune(tichet.MizaTotal);
+            _utilizatorRepo.ActualizeazaSold(utilizator.Id, utilizator.Sold);
+
+            tichet.Status = StatusTichet.Anulat;
+            return _tichetRepo.Update(tichet);
         }
 
         #endregion
@@ -100,23 +144,58 @@ namespace SportBet.Services
         #region Metode publice – Decontare
 
         /// <summary>
-        /// Deconteaza toate tichetele gata de decontare (meciuri finalizate).
+        /// Deconteaza toate tichetele gata de decontare (toate meciurile finalizate).
         /// Crediteaza utilizatorii castigatori.
         /// </summary>
         /// <returns>Numarul de tichete decontate.</returns>
         public int DeconteazaTichete()
         {
-            throw new NotImplementedException();
+            List<Tichet> ticheteDeDecontat = _tichetRepo.GetTicheteDeDecontat();
+            int nrDecontate = 0;
+
+            foreach (Tichet tichet in ticheteDeDecontat)
+            {
+                if (DeconteazaTichet(tichet.Id))
+                    nrDecontate++;
+            }
+
+            return nrDecontate;
         }
 
         /// <summary>
         /// Deconteaza un singur tichet dupa ID.
+        /// Crediteaza utilizatorul daca tichetul este castigat.
         /// </summary>
         /// <param name="tichetId">ID-ul tichetului de decontat.</param>
         /// <returns>True daca decontarea a reusit, altfel false.</returns>
         public bool DeconteazaTichet(int tichetId)
         {
-            throw new NotImplementedException();
+            Tichet tichet = _tichetRepo.GetById(tichetId);
+
+            if (tichet == null)
+                return false;
+
+            if (tichet.Status != StatusTichet.InAsteptare)
+                return false;
+
+            if (!tichet.EsteGataDeDecontare())
+                return false;
+
+            tichet.Deconteaza();
+
+            // Crediteaza utilizatorul cu castigul efectiv (0 daca a pierdut)
+            if (tichet.CastigEfectiv > 0)
+            {
+                Utilizator utilizator = _utilizatorRepo.GetById(tichet.UtilizatorId);
+
+                if (utilizator != null)
+                {
+                    utilizator.Depune(tichet.CastigEfectiv);
+                    _utilizatorRepo.ActualizeazaSold(utilizator.Id, utilizator.Sold);
+                }
+            }
+
+            return _tichetRepo.Update(tichet);
         }
 
         #endregion
@@ -130,7 +209,7 @@ namespace SportBet.Services
         /// <returns>Suma totala mizata in RON.</returns>
         public decimal GetTotalMizat(int utilizatorId)
         {
-            throw new NotImplementedException();
+            return _tichetRepo.GetTotalMizatDeUtilizator(utilizatorId);
         }
 
         /// <summary>
@@ -140,42 +219,37 @@ namespace SportBet.Services
         /// <returns>Suma totala castigata in RON.</returns>
         public decimal GetTotalCastigat(int utilizatorId)
         {
-            throw new NotImplementedException();
+            return _tichetRepo.GetTotalCastigatDeUtilizator(utilizatorId);
         }
 
         /// <summary>
-        /// Calculeaza rata de succes a unui utilizator (procent tichete castigate).
+        /// Calculeaza rata de succes a unui utilizator
+        /// (procent tichete castigate din totalul celor finalizate).
         /// </summary>
         /// <param name="utilizatorId">ID-ul utilizatorului.</param>
         /// <returns>Valoare intre 0 si 100 reprezentand procentul de succes.</returns>
-        public double GetRataSucses(int utilizatorId)
+        public double GetRataSucces(int utilizatorId)
         {
-            throw new NotImplementedException();
-        }
+            List<Tichet> toateTichetele = _tichetRepo.GetByUtilizatorId(utilizatorId);
 
-        #endregion
+            int nrFinalizate = 0;
+            int nrCastigate = 0;
 
-        #region Metode private helper
+            foreach (Tichet tichet in toateTichetele)
+            {
+                if (tichet.Status == StatusTichet.Castigat || tichet.Status == StatusTichet.Pierdut)
+                {
+                    nrFinalizate++;
 
-        /// <summary>
-        /// Valideaza un tichet inainte de plasare (verifica miza, nr. de pariuri, disponibilitate meciuri).
-        /// </summary>
-        /// <param name="utilizatorId">ID-ul utilizatorului.</param>
-        /// <param name="pariuri">Lista de pariuri de validat.</param>
-        /// <param name="miza">Miza de validat.</param>
-        /// <returns>True daca tichetul este valid, altfel false.</returns>
-        private bool ValidareTichet(int utilizatorId, List<Pariu> pariuri, decimal miza)
-        {
-            throw new NotImplementedException();
-        }
+                    if (tichet.Status == StatusTichet.Castigat)
+                        nrCastigate++;
+                }
+            }
 
-        /// <summary>
-        /// Genereaza un ID unic nou pentru un tichet.
-        /// </summary>
-        /// <returns>ID-ul generat.</returns>
-        private int GenereazaIdTichet()
-        {
-            throw new NotImplementedException();
+            if (nrFinalizate == 0)
+                return 0.0;
+
+            return Math.Round((double)nrCastigate / nrFinalizate * 100, 2);
         }
 
         #endregion
