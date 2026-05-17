@@ -184,7 +184,7 @@ namespace SportBet.UI
                     return;
                 }
 
-                var formPariu = new FormPariu();
+                var formPariu = new FormPariu(_utilizatorCurent, meciSelectat, _dataService);
                 formPariu.ShowDialog();
 
                 // Dupa inchiderea formularului, actualizam soldul afisat
