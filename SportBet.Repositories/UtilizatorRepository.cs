@@ -20,9 +20,6 @@ namespace SportBet.Repositories
         /// <summary>Lista interna care stocheaza toti utilizatorii.</summary>
         private readonly List<Utilizator> _utilizatori;
 
-        /// <summary>Contor pentru generarea ID-urilor unice.</summary>
-        private int _nextId;
-
         #endregion
 
         #region Constructor
@@ -33,13 +30,21 @@ namespace SportBet.Repositories
         public UtilizatorRepository()
         {
             _utilizatori = new List<Utilizator>();
-            _nextId = 1;
         }
 
         #endregion
 
         #region Implementare IUtilizatorRepository
 
+        /// <summary>
+        /// Calculeaza urmatorul ID disponibil pe baza ID-urilor existente in lista.
+        /// Returneaza 1 daca lista e goala, altfel returneaza maximul ID-urilor existente + 1.
+        /// </summary>
+        /// <returns>Urmatorul ID disponibil.</returns>
+        private int GetNextId()
+        {
+            return _utilizatori.Count > 0 ? _utilizatori.Max(u => u.Id) + 1 : 1;
+        }
         /// <summary>
         /// Returneaza toti utilizatorii din sursa de date.
         /// </summary>
@@ -122,7 +127,7 @@ namespace SportBet.Repositories
                 return false;
 
             if (utilizator.Id == 0)
-                utilizator.Id = _nextId++;
+                utilizator.Id = GetNextId();
             else if (GetById(utilizator.Id) != null)
                 return false; // ID duplicat
 

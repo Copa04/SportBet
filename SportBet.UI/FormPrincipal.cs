@@ -23,5 +23,10 @@ namespace SportBet.UI
             _utilizatorCurent = utilizator;
             _dataService = dataService;
         }
+
+        private void toolStripButtonIesire_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

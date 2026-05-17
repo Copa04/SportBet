@@ -36,7 +36,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonIesire = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,10 +50,10 @@
             this.toolStripSeparator1,
             this.toolStripLabel1,
             this.toolStripLabel2,
-            this.toolStripButton4});
+            this.toolStripButtonIesire});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(2514, 50);
+            this.toolStrip1.Size = new System.Drawing.Size(2514, 42);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -63,7 +63,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(98, 44);
+            this.toolStripButton1.Size = new System.Drawing.Size(98, 36);
             this.toolStripButton1.Text = "Meciuri";
             // 
             // toolStripButton2
@@ -72,7 +72,7 @@
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(175, 44);
+            this.toolStripButton2.Size = new System.Drawing.Size(175, 36);
             this.toolStripButton2.Text = "Tichetele mele";
             // 
             // toolStripButton3
@@ -81,34 +81,35 @@
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(124, 44);
+            this.toolStripButton3.Size = new System.Drawing.Size(124, 36);
             this.toolStripButton3.Text = "Depunere";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 50);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 42);
             // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(173, 44);
+            this.toolStripLabel1.Size = new System.Drawing.Size(173, 36);
             this.toolStripLabel1.Text = "toolStripLabel1";
             // 
             // toolStripLabel2
             // 
             this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(173, 44);
+            this.toolStripLabel2.Size = new System.Drawing.Size(173, 36);
             this.toolStripLabel2.Text = "toolStripLabel2";
             // 
-            // toolStripButton4
+            // toolStripButtonIesire
             // 
-            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
-            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(74, 44);
-            this.toolStripButton4.Text = "Ieșire";
+            this.toolStripButtonIesire.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonIesire.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonIesire.Image")));
+            this.toolStripButtonIesire.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonIesire.Name = "toolStripButtonIesire";
+            this.toolStripButtonIesire.Size = new System.Drawing.Size(74, 36);
+            this.toolStripButtonIesire.Text = "Ieșire";
+            this.toolStripButtonIesire.Click += new System.EventHandler(this.toolStripButtonIesire_Click);
             // 
             // FormPrincipal
             // 
@@ -134,6 +135,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton toolStripButtonIesire;
     }
 }

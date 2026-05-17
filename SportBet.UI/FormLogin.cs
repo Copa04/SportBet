@@ -62,8 +62,9 @@ namespace SportBet.UI
 
         private void buttonInregistrare_Click(object sender, EventArgs e)
         {
-            var formRegister = new FormRegister(_authService);
-            formRegister.ShowDialog();
+            var formRegister = new FormRegister(_authService, _dataService);
+            formRegister.Show();
+            this.Hide();
         }
 
         private void buttonIesire_Click(object sender, EventArgs e)
