@@ -85,7 +85,7 @@ namespace SportBet.UI
         /// </summary>
         private void PopuleazaDetaliiMeci()
         {
-            label1.Text = _meci.Liga;
+            labelLiga.Text = _meci.Liga;
             labelMeci.Text = $"{_meci.EchipaGazda} — {_meci.EchipaOaspete}";
             labelData.Text = _meci.DataOra.ToString("dd.MM.yyyy HH:mm");
 
@@ -101,21 +101,30 @@ namespace SportBet.UI
         /// </summary>
         private void InitializeazaControale()
         {
-            // Selectie implicita: Gazda
             radioButtonGazda.Checked = true;
             _cotaSelectata = _meci.CotaGazda;
             _tipSelectie = "1";
 
-            // Configureaza NumericUpDown
             numericUpDownMiza.Minimum = 1;
-            numericUpDownMiza.Maximum = (decimal)_utilizatorCurent.Sold;
             numericUpDownMiza.DecimalPlaces = 2;
-            numericUpDownMiza.Value = 1;
 
-            // Afiseaza soldul disponibil
-            labelSoldDisponibil.Text = $"{_utilizatorCurent.Sold:F2} RON";
+            if (_utilizatorCurent.Sold < 1)
+            {
+                // Sold insuficient — dezactiveaza butonul de plasare
+                numericUpDownMiza.Minimum = 0;
+                numericUpDownMiza.Maximum = 0;
+                numericUpDownMiza.Value = 0;
+                buttonPlaseazaPariul.Enabled = false;
+                labelSoldDisponibil.Text = $"{_utilizatorCurent.Sold:F2} RON — sold insuficient";
+            }
+            else
+            {
+                numericUpDownMiza.Maximum = _utilizatorCurent.Sold;
+                numericUpDownMiza.Value = 1;
+                buttonPlaseazaPariul.Enabled = true;
+                labelSoldDisponibil.Text = $"{_utilizatorCurent.Sold:F2} RON";
+            }
 
-            // Actualizeaza castigul potential initial
             ActualizeazaCastigPotential();
         }
 

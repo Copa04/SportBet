@@ -36,6 +36,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.labelCotaSelectata = new System.Windows.Forms.Label();
             this.radioButtonOaspete = new System.Windows.Forms.RadioButton();
             this.radioButtonEgal = new System.Windows.Forms.RadioButton();
@@ -126,6 +127,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.labelCotaSelectata);
             this.groupBox2.Controls.Add(this.radioButtonOaspete);
             this.groupBox2.Controls.Add(this.radioButtonEgal);
@@ -135,12 +137,21 @@
             this.groupBox2.Size = new System.Drawing.Size(2083, 210);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "groupBox2";
+            this.groupBox2.Text = "Selecție pariu";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(932, 148);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(122, 25);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Cota totală:";
             // 
             // labelCotaSelectata
             // 
             this.labelCotaSelectata.AutoSize = true;
-            this.labelCotaSelectata.Location = new System.Drawing.Point(1005, 148);
+            this.labelCotaSelectata.Location = new System.Drawing.Point(1066, 148);
             this.labelCotaSelectata.Name = "labelCotaSelectata";
             this.labelCotaSelectata.Size = new System.Drawing.Size(82, 25);
             this.labelCotaSelectata.TabIndex = 6;
@@ -151,33 +162,36 @@
             this.radioButtonOaspete.AutoSize = true;
             this.radioButtonOaspete.Location = new System.Drawing.Point(1697, 91);
             this.radioButtonOaspete.Name = "radioButtonOaspete";
-            this.radioButtonOaspete.Size = new System.Drawing.Size(165, 29);
+            this.radioButtonOaspete.Size = new System.Drawing.Size(155, 29);
             this.radioButtonOaspete.TabIndex = 2;
             this.radioButtonOaspete.TabStop = true;
-            this.radioButtonOaspete.Text = "radioButton3";
+            this.radioButtonOaspete.Text = "2 - Oaspete";
             this.radioButtonOaspete.UseVisualStyleBackColor = true;
+            this.radioButtonOaspete.Click += new System.EventHandler(this.radioButtonOaspete_CheckedChanged);
             // 
             // radioButtonEgal
             // 
             this.radioButtonEgal.AutoSize = true;
             this.radioButtonEgal.Location = new System.Drawing.Point(959, 91);
             this.radioButtonEgal.Name = "radioButtonEgal";
-            this.radioButtonEgal.Size = new System.Drawing.Size(165, 29);
+            this.radioButtonEgal.Size = new System.Drawing.Size(119, 29);
             this.radioButtonEgal.TabIndex = 1;
             this.radioButtonEgal.TabStop = true;
-            this.radioButtonEgal.Text = "radioButton2";
+            this.radioButtonEgal.Text = "X - Egal";
             this.radioButtonEgal.UseVisualStyleBackColor = true;
+            this.radioButtonEgal.Click += new System.EventHandler(this.radioButtonEgal_CheckedChanged);
             // 
             // radioButtonGazda
             // 
             this.radioButtonGazda.AutoSize = true;
             this.radioButtonGazda.Location = new System.Drawing.Point(123, 91);
             this.radioButtonGazda.Name = "radioButtonGazda";
-            this.radioButtonGazda.Size = new System.Drawing.Size(165, 29);
+            this.radioButtonGazda.Size = new System.Drawing.Size(137, 29);
             this.radioButtonGazda.TabIndex = 0;
             this.radioButtonGazda.TabStop = true;
-            this.radioButtonGazda.Text = "radioButton1";
+            this.radioButtonGazda.Text = "1 - Gazda";
             this.radioButtonGazda.UseVisualStyleBackColor = true;
+            this.radioButtonGazda.Click += new System.EventHandler(this.radioButtonGazda_CheckedChanged);
             // 
             // groupBox3
             // 
@@ -192,7 +206,7 @@
             this.groupBox3.Size = new System.Drawing.Size(2083, 215);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "groupBox3";
+            this.groupBox3.Text = "Miză și câștig";
             // 
             // labelSoldDisponibil
             // 
@@ -215,20 +229,20 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(118, 142);
+            this.label6.Location = new System.Drawing.Point(369, 142);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(70, 25);
+            this.label6.Size = new System.Drawing.Size(152, 25);
             this.label6.TabIndex = 3;
-            this.label6.Text = "label6";
+            this.label6.Text = "Sold disponibil";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(118, 97);
+            this.label5.Location = new System.Drawing.Point(369, 97);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(70, 25);
+            this.label5.Size = new System.Drawing.Size(161, 25);
             this.label5.TabIndex = 2;
-            this.label5.Text = "label5";
+            this.label5.Text = "Câștig potențial";
             // 
             // numericUpDownMiza
             // 
@@ -236,15 +250,16 @@
             this.numericUpDownMiza.Name = "numericUpDownMiza";
             this.numericUpDownMiza.Size = new System.Drawing.Size(237, 31);
             this.numericUpDownMiza.TabIndex = 1;
+            this.numericUpDownMiza.Click += new System.EventHandler(this.numericUpDownMiza_ValueChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(118, 55);
+            this.label4.Location = new System.Drawing.Point(369, 55);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(70, 25);
+            this.label4.Size = new System.Drawing.Size(58, 25);
             this.label4.TabIndex = 0;
-            this.label4.Text = "label4";
+            this.label4.Text = "Miza";
             // 
             // buttonAnulare
             // 
@@ -254,15 +269,17 @@
             this.buttonAnulare.TabIndex = 3;
             this.buttonAnulare.Text = "Anulare";
             this.buttonAnulare.UseVisualStyleBackColor = true;
+            this.buttonAnulare.Click += new System.EventHandler(this.buttonAnulare_Click);
             // 
             // buttonPlaseazaPariul
             // 
-            this.buttonPlaseazaPariul.Location = new System.Drawing.Point(1433, 839);
+            this.buttonPlaseazaPariul.Location = new System.Drawing.Point(1426, 829);
             this.buttonPlaseazaPariul.Name = "buttonPlaseazaPariul";
             this.buttonPlaseazaPariul.Size = new System.Drawing.Size(333, 52);
             this.buttonPlaseazaPariul.TabIndex = 4;
             this.buttonPlaseazaPariul.Text = "Plaseaza pariul";
             this.buttonPlaseazaPariul.UseVisualStyleBackColor = true;
+            this.buttonPlaseazaPariul.Click += new System.EventHandler(this.buttonPlaseazaPariul_Click);
             // 
             // FormPariu
             // 
@@ -276,6 +293,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "FormPariu";
             this.Text = "FormPariu";
+            this.Load += new System.EventHandler(this.FormPariu_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -310,5 +328,6 @@
         private System.Windows.Forms.Label labelData;
         private System.Windows.Forms.Label labelMeci;
         private System.Windows.Forms.Label labelLiga;
+        private System.Windows.Forms.Label label7;
     }
 }
