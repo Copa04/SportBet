@@ -129,7 +129,7 @@ namespace SportBet.Models
         /// <returns>String cu denumirea meciului.</returns>
         public string GetDenumireMeci()
         {
-            throw new NotImplementedException();
+            return string.Format("{0} vs {1}", EchipaGazda, EchipaOaspete);
         }
 
         /// <summary>
@@ -138,7 +138,8 @@ namespace SportBet.Models
         /// <returns>True daca se poate paria pe acest meci, altfel false.</returns>
         public bool EsteDisponibilPariere()
         {
-            throw new NotImplementedException();
+            return Status == StatusMeci.Programat;
+                //&& DataOra > DateTime.Now;
         }
 
         /// <summary>
@@ -148,8 +149,22 @@ namespace SportBet.Models
         /// <returns>Valoarea cotei sau 0 daca tipul nu este valid.</returns>
         public double GetCotaForTip(string tipPariu)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(tipPariu))
+                return 0;
+
+            switch (tipPariu.Trim().ToUpper())
+            {
+                case "1":
+                    return CotaGazda;
+                case "X":
+                    return CotaEgalitate;
+                case "2":
+                    return CotaOaspete;
+                default:
+                    return 0;
+            }
         }
+
 
         /// <summary>
         /// Seteaza scorul final al meciului si il marcheaza ca finalizat.
@@ -158,7 +173,12 @@ namespace SportBet.Models
         /// <param name="scorOaspete">Goluri/puncte echipa oaspete.</param>
         public void SetScorFinal(int scorGazda, int scorOaspete)
         {
-            throw new NotImplementedException();
+            if (scorGazda < 0 || scorOaspete < 0)
+                throw new ArgumentException("Scorul nu poate fi negativ.");
+
+            ScorGazda = scorGazda;
+            ScorOaspete = scorOaspete;
+            Status = StatusMeci.Finalizat;
         }
 
         /// <summary>
@@ -167,7 +187,16 @@ namespace SportBet.Models
         /// <returns>Rezultatul meciului sau null daca nu este finalizat.</returns>
         public string GetRezultat()
         {
-            throw new NotImplementedException();
+            if (Status != StatusMeci.Finalizat || !ScorGazda.HasValue || !ScorOaspete.HasValue)
+                return null;
+
+            if (ScorGazda.Value > ScorOaspete.Value)
+                return "1";
+
+            if (ScorGazda.Value == ScorOaspete.Value)
+                return "X";
+
+            return "2";
         }
 
         /// <summary>
@@ -176,9 +205,16 @@ namespace SportBet.Models
         /// <returns>String cu informatiile principale ale meciului.</returns>
         public override string ToString()
         {
-            throw new NotImplementedException();
+            string scor = "-";
+
+            if (ScorGazda.HasValue && ScorOaspete.HasValue)
+                scor = string.Format("{0}-{1}", ScorGazda.Value, ScorOaspete.Value);
+
+            return string.Format("#{0} | {1} | {2} | {3:dd.MM.yyyy HH:mm} | Cote: 1={4:0.00}, X={5:0.00}, 2={6:0.00} | Status: {7} | Scor: {8}",
+                Id, GetDenumireMeci(), Liga, DataOra, CotaGazda, CotaEgalitate, CotaOaspete, Status, scor);
         }
 
         #endregion
     }
+
 }

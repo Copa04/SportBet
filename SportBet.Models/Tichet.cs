@@ -98,7 +98,11 @@ namespace SportBet.Models
         /// <param name="pariu">Pariurile de adaugat.</param>
         public void AdaugaPariu(Pariu pariu)
         {
-            throw new NotImplementedException();
+            if (pariu == null)
+                throw new ArgumentNullException("pariu");
+
+            Pariuri.Add(pariu);
+            RecalculeazaCotaTotala();
         }
 
         /// <summary>
@@ -107,7 +111,21 @@ namespace SportBet.Models
         /// <param name="pariuId">ID-ul pariurilor de eliminat.</param>
         public void EliminaPariu(int pariuId)
         {
-            throw new NotImplementedException();
+            Pariu pariuDeEliminat = null;
+
+            foreach (Pariu pariu in Pariuri)
+            {
+                if (pariu.Id == pariuId)
+                {
+                    pariuDeEliminat = pariu;
+                    break;
+                }
+            }
+
+            if (pariuDeEliminat != null)
+                Pariuri.Remove(pariuDeEliminat);
+
+            RecalculeazaCotaTotala();
         }
 
         /// <summary>
@@ -116,7 +134,22 @@ namespace SportBet.Models
         /// </summary>
         public void RecalculeazaCotaTotala()
         {
-            throw new NotImplementedException();
+            if (Pariuri == null || Pariuri.Count == 0)
+            {
+                CotaTotala = 1.0;
+                CastigPotential = 0m;
+                return;
+            }
+
+            double produs = 1.0;
+
+            foreach (Pariu pariu in Pariuri)
+            {
+                produs *= pariu.Cota;
+            }
+
+            CotaTotala = produs;
+            CastigPotential = CalculeazaCastigPotential();
         }
 
         /// <summary>
@@ -125,7 +158,10 @@ namespace SportBet.Models
         /// <returns>Valoarea castigului potential in RON.</returns>
         public decimal CalculeazaCastigPotential()
         {
-            throw new NotImplementedException();
+            if (MizaTotal <= 0 || Pariuri == null || Pariuri.Count == 0)
+                return 0m;
+
+            return Math.Round(MizaTotal * (decimal)CotaTotala, 2);
         }
 
         /// <summary>
@@ -133,7 +169,43 @@ namespace SportBet.Models
         /// </summary>
         public void Deconteaza()
         {
-            throw new NotImplementedException();
+            if (Status == StatusTichet.Anulat)
+                return;
+
+            if (!EsteGataDeDecontare())
+                throw new InvalidOperationException("Tichetul nu poate fi decontat deoarece nu toate meciurile sunt finalizate sau anulate.");
+
+            bool arePariuPierdut = false;
+            bool toateReturnate = true;
+
+            foreach (Pariu pariu in Pariuri)
+            {
+                pariu.ActualizeazaStatus();
+
+                if (pariu.Status == StatusPariu.Pierdut)
+                    arePariuPierdut = true;
+
+                if (pariu.Status != StatusPariu.Returnat && pariu.Status != StatusPariu.Anulat)
+                    toateReturnate = false;
+            }
+
+            if (arePariuPierdut)
+            {
+                Status = StatusTichet.Pierdut;
+                CastigEfectiv = 0m;
+            }
+            else if (toateReturnate)
+            {
+                Status = StatusTichet.Anulat;
+                CastigEfectiv = MizaTotal;
+            }
+            else
+            {
+                Status = StatusTichet.Castigat;
+                CastigEfectiv = CalculeazaCastigPotential();
+            }
+
+            DataDecontare = DateTime.Now;
         }
 
         /// <summary>
@@ -142,7 +214,20 @@ namespace SportBet.Models
         /// <returns>True daca tichetul poate fi decontat, altfel false.</returns>
         public bool EsteGataDeDecontare()
         {
-            throw new NotImplementedException();
+            if (Pariuri == null || Pariuri.Count == 0)
+                return false;
+
+            foreach (Pariu pariu in Pariuri)
+            {
+                if (pariu.MeciAsociat == null)
+                    return false;
+
+                if (pariu.MeciAsociat.Status != StatusMeci.Finalizat &&
+                    pariu.MeciAsociat.Status != StatusMeci.Anulat)
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -151,7 +236,7 @@ namespace SportBet.Models
         /// <returns>Numarul de pariuri.</returns>
         public int GetNrPariuri()
         {
-            throw new NotImplementedException();
+            return Pariuri == null ? 0 : Pariuri.Count;
         }
 
         /// <summary>
@@ -160,7 +245,8 @@ namespace SportBet.Models
         /// <returns>String cu informatiile principale ale tichetului.</returns>
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return string.Format("Tichet #{0} | Utilizator: {1} | Miza: {2:0.00} RON | Pariuri: {3} | Cota totala: {4:0.00} | Castig potential: {5:0.00} RON | Status: {6}",
+                            Id, UtilizatorId, MizaTotal, GetNrPariuri(), CotaTotala, CastigPotential, Status);
         }
 
         #endregion

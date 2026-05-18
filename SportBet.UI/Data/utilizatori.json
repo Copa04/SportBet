@@ -1,0 +1,23 @@
+﻿[
+  {
+    "Id": 1,
+    "Username": "admin",
+    "Parola": "admin123",
+    "Sold": 1000.00,
+    "EsteActiv": true
+  },
+  {
+    "Id": 2,
+    "Username": "ion_popescu",
+    "Parola": "parola123",
+    "Sold": 500.00,
+    "EsteActiv": true
+  },
+  {
+    "Id": 3,
+    "Username": "teonika",
+    "Parola": "teona123",
+    "Sold": 100.00,
+    "EsteActiv": true
+  }
+]

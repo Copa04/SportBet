@@ -21,7 +21,7 @@ namespace SportBet.Models
         public string Username { get; set; }
 
         /// <summary>Parola criptata a utilizatorului.</summary>
-        public string ParolaCriptata { get; set; }
+        public string Parola { get; set; }
 
         /// <summary>Adresa de email a utilizatorului.</summary>
         public string Email { get; set; }
@@ -64,17 +64,17 @@ namespace SportBet.Models
         /// </summary>
         /// <param name="id">Identificatorul unic.</param>
         /// <param name="username">Numele de utilizator.</param>
-        /// <param name="parolaCriptata">Parola deja criptata.</param>
+        /// <param name="parola">Parola.</param>
         /// <param name="email">Adresa de email.</param>
         /// <param name="prenume">Prenumele utilizatorului.</param>
         /// <param name="nume">Numele de familie.</param>
         /// <param name="sold">Soldul initial al contului.</param>
-        public Utilizator(int id, string username, string parolaCriptata,
+        public Utilizator(int id, string username, string parola,
                           string email, string prenume, string nume, decimal sold)
         {
             Id = id;
             Username = username;
-            ParolaCriptata = parolaCriptata;
+            Parola = parola;
             Email = email;
             Prenume = prenume;
             Nume = nume;
@@ -94,7 +94,7 @@ namespace SportBet.Models
         /// <returns>String-ul cu numele complet.</returns>
         public string GetNumeComplet()
         {
-            throw new NotImplementedException();
+            return string.Format("{0} {1}", Prenume, Nume).Trim();
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace SportBet.Models
         /// <returns>True daca soldul acopera suma, altfel false.</returns>
         public bool AreSuficienteFonduri(decimal suma)
         {
-            throw new NotImplementedException();
+            return EsteActiv && suma > 0 && Sold >= suma;
         }
 
         /// <summary>
@@ -113,7 +113,13 @@ namespace SportBet.Models
         /// <param name="suma">Suma de adaugat.</param>
         public void Depune(decimal suma)
         {
-            throw new NotImplementedException();
+            if (!EsteActiv)
+                throw new InvalidOperationException("Contul utilizatorului nu este activ.");
+
+            if (suma <= 0)
+                throw new ArgumentException("Suma depusa trebuie sa fie mai mare decat 0.");
+
+            Sold += suma;
         }
 
         /// <summary>
@@ -122,7 +128,16 @@ namespace SportBet.Models
         /// <param name="suma">Suma de scazut.</param>
         public void Retrage(decimal suma)
         {
-            throw new NotImplementedException();
+            if (!EsteActiv)
+                throw new InvalidOperationException("Contul utilizatorului nu este activ.");
+
+            if (suma <= 0)
+                throw new ArgumentException("Suma retrasa trebuie sa fie mai mare decat 0.");
+
+            if (!AreSuficienteFonduri(suma))
+                throw new InvalidOperationException("Fonduri insuficiente.");
+
+            Sold -= suma;
         }
 
         /// <summary>
@@ -131,7 +146,8 @@ namespace SportBet.Models
         /// <returns>String cu informatiile principale ale utilizatorului.</returns>
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return string.Format("#{0} | {1} ({2}) | Email: {3} | Sold: {4:0.00} RON | Activ: {5}",
+                            Id, GetNumeComplet(), Username, Email, Sold, EsteActiv ? "Da" : "Nu");
         }
 
         #endregion
