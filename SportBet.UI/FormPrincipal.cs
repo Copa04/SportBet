@@ -1,4 +1,4 @@
-﻿// Autor: Maxim-Cezar Andrei
+﻿// Autor: Echipa SportBet
 // Functionalitate: Fereastra principala a aplicatiei SportBet.
 //                  Afiseaza meciurile disponibile, permite construirea unui tichet
 //                  prin adaugarea de pariuri si finalizarea acestuia.
