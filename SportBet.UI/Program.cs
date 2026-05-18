@@ -19,6 +19,8 @@ internal static class Program
         dataService.Initializeaza();
         var authService = new AuthService(dataService.UtilizatorRepository);
 
-        Application.Run(new FormLogin(authService, dataService));
+        var tichetService = new TichetService(dataService.TichetRepository, dataService.MeciRepository, dataService.UtilizatorRepository);
+
+        Application.Run(new FormLogin(authService, dataService, tichetService));
     }
 }

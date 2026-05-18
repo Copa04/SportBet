@@ -16,13 +16,14 @@ namespace SportBet.UI
     {
         private readonly AuthService _authService;
         private readonly DataService _dataService;
-        //private readonly TichetService _tichetService;
+        private readonly TichetService _tichetService;
 
-        public FormRegister(AuthService authService, DataService dataService)
+        public FormRegister(AuthService authService, DataService dataService, TichetService tichetService)
         {
             InitializeComponent();
             _authService = authService;
             _dataService = dataService;
+            _tichetService = tichetService;
         }
 
         private void buttonInregistrare_Click(object sender, EventArgs e)
@@ -73,7 +74,7 @@ namespace SportBet.UI
                 MessageBox.Show("Cont creat cu succes!", "Succes",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                var formLogin = new FormLogin(_authService, _dataService);
+                var formLogin = new FormLogin(_authService, _dataService, _tichetService);
                 formLogin.Show();
 
                 this.Close();

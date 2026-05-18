@@ -15,13 +15,14 @@ namespace SportBet.UI
     {
         private readonly AuthService _authService;
         private readonly DataService _dataService;
-        //private readonly TichetService _tichetService;
+        private readonly TichetService _tichetService;
 
-        public FormLogin(AuthService authService, DataService dataService)
+        public FormLogin(AuthService authService, DataService dataService, TichetService tichetService)
         {
             InitializeComponent();
             _authService = authService;
             _dataService = dataService;
+            _tichetService = tichetService;
         }
 
         private void buttonAutentificare_Click(object sender, EventArgs e)
@@ -49,7 +50,7 @@ namespace SportBet.UI
                 }
 
                 var formPrincipal = new FormPrincipal(
-                    _authService.UtilizatorCurent, _dataService);
+                    _authService.UtilizatorCurent, _dataService, _authService, _tichetService);
                 formPrincipal.Show();
                 this.Hide();
             }
@@ -62,7 +63,7 @@ namespace SportBet.UI
 
         private void buttonInregistrare_Click(object sender, EventArgs e)
         {
-            var formRegister = new FormRegister(_authService, _dataService);
+            var formRegister = new FormRegister(_authService, _dataService, _tichetService);
             formRegister.Show();
             this.Hide();
         }

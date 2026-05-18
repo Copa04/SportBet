@@ -1,4 +1,4 @@
-﻿// Autor: Maxim-Cezar Andrei
+﻿// Autor: Echipa SportBet
 // Functionalitate: Formular pentru plasarea unui pariu pe un meci selectat.
 //                  Permite selectarea tipului de pariu (1/X/2), introducerea
 //                  mizei si afisarea castigului potential inainte de confirmare.
@@ -37,6 +37,11 @@ namespace SportBet.UI
         private string _tipSelectie;
 
         #endregion
+
+        /// <summary>Pariul creat, disponibil dupa inchiderea formularului.</summary>
+        public Pariu PariulCreat { get; private set; }
+
+        public decimal MizaIntrodusa { get; private set; }
 
         #region Constructor
 
@@ -241,30 +246,10 @@ namespace SportBet.UI
                 if (confirmare != DialogResult.Yes)
                     return;
 
-                // Creaza pariul
-                Pariu pariu = new Pariu(0, 0, _meci.Id, _tipSelectie, _cotaSelectata);
-                pariu.MeciAsociat = _meci;
-
-                // Creaza tichetul si adauga pariul
-                Tichet tichet = new Tichet(0, _utilizatorCurent.Id, miza);
-                tichet.AdaugaPariu(pariu);
-
-                // Scade miza din soldul utilizatorului
-                _utilizatorCurent.Retrage(miza);
-
-                // Salveaza tichetul in repository si in JSON
-                _dataService.TichetRepository.Add(tichet);
-                _dataService.SalveazaTichete(_dataService.TichetRepository.GetAll());
-
-                // Salveaza soldul actualizat al utilizatorului in JSON
-                _dataService.UtilizatorRepository.ActualizeazaSold(
-                    _utilizatorCurent.Id, _utilizatorCurent.Sold);
-                _dataService.SalveazaUtilizatori(_dataService.UtilizatorRepository.GetAll());
-
-                MessageBox.Show(
-                    $"Pariul a fost plasat cu succes!\nSold ramas: {_utilizatorCurent.Sold:F2} RON",
-                    "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                PariulCreat = new Pariu(0, 0, _meci.Id, _tipSelectie, _cotaSelectata);
+                PariulCreat.MeciAsociat = _meci;
+                MizaIntrodusa = numericUpDownMiza.Value;
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             catch (Exception ex)

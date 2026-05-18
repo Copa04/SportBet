@@ -138,7 +138,8 @@ namespace SportBet.Models
         /// <returns>True daca se poate paria pe acest meci, altfel false.</returns>
         public bool EsteDisponibilPariere()
         {
-            return Status == StatusMeci.Programat && DataOra > DateTime.Now;
+            return Status == StatusMeci.Programat;
+                //&& DataOra > DateTime.Now;
         }
 
         /// <summary>
