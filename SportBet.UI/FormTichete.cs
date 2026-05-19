@@ -1,4 +1,4 @@
-﻿// Autor: Echipa SportBet
+﻿// Autor: Maxim Cezar-Andrei
 // Functionalitate: Formular pentru vizualizarea tichetelor plasate de utilizatorul curent.
 //                  Afiseaza lista tichetelor si detaliile fiecaruia, inclusiv pariurile componente.
 
@@ -20,14 +20,9 @@ namespace SportBet.UI
     {
         #region Campuri private
 
-        /// <summary>Utilizatorul curent autentificat.</summary>
         private readonly Utilizator _utilizatorCurent;
-
-        /// <summary>Serviciul central de date.</summary>
         private readonly DataService _dataService;
         private readonly TichetService _tichetService;
-
-        /// <summary>Lista tichetelor utilizatorului curent.</summary>
         private List<Tichet> _tichete;
 
         #endregion
@@ -65,8 +60,7 @@ namespace SportBet.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare la incarcarea formularului: {ex.Message}",
-                    "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Eroare la incarcarea formularului: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -147,7 +141,6 @@ namespace SportBet.UI
                 item.SubItems.Add(tichet.Status.ToString());
                 item.Tag = tichet;
 
-                // Colorare dupa status
                 switch (tichet.Status)
                 {
                     case StatusTichet.Castigat:
@@ -176,31 +169,12 @@ namespace SportBet.UI
         /// <param name="tichet">Tichetul de afisat.</param>
         private void AfiseazaDetaliiTichet(Tichet tichet)
         {
-            // Informatii generale
             labelDataPlasare.Text = tichet.DataPlasare.ToString("dd.MM.yyyy HH:mm");
             labelStatus.Text = tichet.Status.ToString();
             labelMiza.Text = $"{tichet.MizaTotal:F2} RON";
             labelCotaTotala.Text = tichet.CotaTotala.ToString("F2");
             labelCastigPotential.Text = $"{tichet.CastigPotential:F2} RON";
 
-            // Coloreaza statusul
-            switch (tichet.Status)
-            {
-                case StatusTichet.Castigat:
-                    labelStatus.ForeColor = Color.Green;
-                    break;
-                case StatusTichet.Pierdut:
-                    labelStatus.ForeColor = Color.Red;
-                    break;
-                case StatusTichet.Anulat:
-                    labelStatus.ForeColor = Color.Gray;
-                    break;
-                default:
-                    labelStatus.ForeColor = Color.Black;
-                    break;
-            }
-
-            // Incarca pariurile din tichet
             listViewPariuri.Items.Clear();
 
             if (tichet.Pariuri == null || tichet.Pariuri.Count == 0)
@@ -211,7 +185,6 @@ namespace SportBet.UI
 
             foreach (Pariu pariu in tichet.Pariuri)
             {
-                // Incarca meciul asociat din repository daca nu e deja incarcat
                 if (pariu.MeciAsociat == null)
                 {
                     Tichet tichetComplet = _tichetService.GetTichetById(tichet.Id);
@@ -228,26 +201,13 @@ namespace SportBet.UI
                 item.SubItems.Add(pariu.Status.ToString());
                 item.Tag = pariu;
 
-                switch (pariu.Status)
-                {
-                    case StatusPariu.Castigat:
-                        item.ForeColor = Color.Green;
-                        break;
-                    case StatusPariu.Pierdut:
-                        item.ForeColor = Color.Red;
-                        break;
-                    default:
-                        item.ForeColor = Color.Black;
-                        break;
-                }
-
                 listViewPariuri.Items.Add(item);
             }
         }
 
         #endregion
 
-        #region Handlere ListView
+        #region Handlere
 
         /// <summary>
         /// La selectarea unui tichet din lista, afiseaza detaliile acestuia.
@@ -263,10 +223,6 @@ namespace SportBet.UI
             Tichet tichetSelectat = (Tichet)listViewTichete.SelectedItems[0].Tag;
             AfiseazaDetaliiTichet(tichetSelectat);
         }
-
-        #endregion
-
-        #region Handler buton
 
         /// <summary>
         /// Inchide formularul.

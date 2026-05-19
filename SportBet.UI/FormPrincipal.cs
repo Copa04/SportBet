@@ -1,8 +1,7 @@
-﻿// Autor: Echipa SportBet
+﻿// Autor: Maxim Cezar-Andrei
 // Functionalitate: Fereastra principala a aplicatiei SportBet.
 //                  Afiseaza meciurile disponibile, permite construirea unui tichet
 //                  prin adaugarea de pariuri si finalizarea acestuia.
-
 
 using SportBet.Models;
 using SportBet.Services;
@@ -22,20 +21,12 @@ namespace SportBet.UI
     {
         #region Campuri private
 
-        /// <summary>Lista tuturor meciurilor incarcate din fisierul JSON.</summary>
         private List<Meci> _meciuri;
-
-        /// <summary>Utilizatorul curent autentificat, pasat din FormLogin.</summary>
         private readonly Utilizator _utilizatorCurent;
-
-        /// <summary>Serviciul central de date, instantiat in Program.cs si pasat aici.</summary>
         private readonly DataService _dataService;
         private readonly AuthService _authService;
         private readonly TichetService _tichetService;
-
-        /// <summary>Lista pariurilor din tichetul in constructie.</summary>
         private List<Pariu> _pariuriCurente = new List<Pariu>();
-
         private decimal _mizaTichet = 0;
 
         #endregion
@@ -76,8 +67,7 @@ namespace SportBet.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare la incarcarea datelor: {ex.Message}",
-                    "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Eroare la incarcarea datelor: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -307,7 +297,7 @@ namespace SportBet.UI
 
         #endregion
 
-        #region Handlere ToolStrip
+        #region Handlere
 
         /// <summary>
         /// Click pe "Meciuri" — reincarca lista de meciuri.
@@ -330,8 +320,7 @@ namespace SportBet.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare: {ex.Message}",
-                    "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Eroare: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -348,8 +337,7 @@ namespace SportBet.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare: {ex.Message}",
-                    "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Eroare: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -372,10 +360,6 @@ namespace SportBet.UI
             }
         }
 
-        #endregion
-
-        #region Handlere ListView meciuri
-
         /// <summary>
         /// Dublu-click pe un meci — deschide FormPlasarePariu.
         /// </summary>
@@ -392,10 +376,6 @@ namespace SportBet.UI
             DeschideFormPlasarePariu();
         }
 
-        #endregion
-
-        #region Handlere panel tichet
-
         /// <summary>
         /// La schimbarea mizei, recalculeaza castigul potential.
         /// </summary>
@@ -411,8 +391,7 @@ namespace SportBet.UI
         {
             if (listViewTichetCurent.SelectedItems.Count == 0)
             {
-                MessageBox.Show("Selectati un pariu din lista.",
-                    "Atentie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Selectati un pariu din lista.", "Atentie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -441,8 +420,7 @@ namespace SportBet.UI
             {
                 if (_pariuriCurente.Count == 0)
                 {
-                    MessageBox.Show("Adaugati cel putin un pariu inainte de a finaliza.",
-                        "Atentie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Adaugati cel putin un pariu inainte de a finaliza.", "Atentie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -450,12 +428,10 @@ namespace SportBet.UI
 
                 if (!_utilizatorCurent.AreSuficienteFonduri(miza))
                 {
-                    MessageBox.Show("Sold insuficient pentru aceasta miza.",
-                        "Atentie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Sold insuficient pentru aceasta miza.", "Atentie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Calculeaza cota totala pentru mesajul de confirmare
                 double cotaTotala = 1.0;
                 foreach (Pariu p in _pariuriCurente)
                     cotaTotala *= p.Cota;
@@ -475,36 +451,18 @@ namespace SportBet.UI
                 if (confirmare != DialogResult.Yes)
                     return;
 
-                // Plaseaza tichetul prin TichetService
-                TichetService tichetService = new TichetService(
-                    _dataService.TichetRepository,
-                    _dataService.MeciRepository,
-                    _dataService.UtilizatorRepository);
+                TichetService tichetService = new TichetService(_dataService.TichetRepository, _dataService.MeciRepository, _dataService.UtilizatorRepository);
 
                 Utilizator u = _dataService.UtilizatorRepository.GetById(_utilizatorCurent.Id);
-                MessageBox.Show(
-                    $"Utilizator gasit: {u != null}\n" +
-                    $"EsteActiv: {u?.EsteActiv}\n" +
-                    $"Sold utilizator in repo: {u?.Sold}\n" +
-                    $"Miza: {miza}\n" +
-                    $"AreSuficienteFonduri: {u?.AreSuficienteFonduri(miza)}\n" +
-                    $"Nr pariuri: {_pariuriCurente.Count}\n" +
-                    $"MeciId primul pariu: {_pariuriCurente[0].MeciId}\n" +
-                    $"Meci gasit in repo: {_dataService.MeciRepository.GetById(_pariuriCurente[0].MeciId) != null}",
-                    "Debug");
 
-
-                Tichet tichet = tichetService.PlaseazaTichet(
-                    _utilizatorCurent.Id, _pariuriCurente, miza);
+                Tichet tichet = tichetService.PlaseazaTichet(_utilizatorCurent.Id, _pariuriCurente, miza);
 
                 if (tichet == null)
                 {
-                    MessageBox.Show("Eroare la plasarea tichetului. Verificati datele.",
-                        "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Eroare la plasarea tichetului. Verificati datele.", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Salveaza in JSON
                 _dataService.SalveazaTichete(_dataService.TichetRepository.GetAll());
                 _dataService.SalveazaUtilizatori(_dataService.UtilizatorRepository.GetAll());
 
@@ -512,7 +470,6 @@ namespace SportBet.UI
                     $"Tichet plasat cu succes!\nSold ramas: {_utilizatorCurent.Sold:F2} RON",
                     "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Reseteaza tichetul curent
                 _pariuriCurente.Clear();
                 ActualizeazaPanelTichet();
                 ActualizeazaSold();

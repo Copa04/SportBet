@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Copacinschi David-Ioan
 // Functionalitate: Clasa model pentru un meci sportiv disponibil la pariere.
 //                  Contine informatii despre echipe, cote si statusul meciului.
 

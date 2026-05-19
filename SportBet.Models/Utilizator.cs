@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Copacinschi David-Ioan
 // Functionalitate: Clasa model pentru un utilizator al aplicatiei de pariuri sportive.
 //                  Contine datele de autentificare si informatiile contului.
 

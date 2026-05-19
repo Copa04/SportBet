@@ -1,4 +1,8 @@
-﻿using SportBet.Models;
+﻿// Autor: Maxim Cezar-Andrei
+// Functionalitate: Formular de inregistrare pentru crearea unui cont nou in aplicatia SportBet.
+//                  Valideaza datele introduse, verifica unicitatea username-ului si salveaza contul.
+
+using SportBet.Models;
 using SportBet.Services;
 using System;
 using System.Collections.Generic;
@@ -14,10 +18,22 @@ namespace SportBet.UI
 {
     public partial class FormRegister : Form
     {
+        #region Campuri private
+
         private readonly AuthService _authService;
         private readonly DataService _dataService;
         private readonly TichetService _tichetService;
 
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializeaza FormRegister cu serviciile necesare inregistrarii unui cont nou.
+        /// </summary>
+        /// <param name="authService">Instanta AuthService creata in Program.cs.</param>
+        /// <param name="dataService">Instanta DataService creata in Program.cs.</param>
+        /// <param name="tichetService">Instanta TichetService creata in Program.cs.</param>
         public FormRegister(AuthService authService, DataService dataService, TichetService tichetService)
         {
             InitializeComponent();
@@ -26,6 +42,13 @@ namespace SportBet.UI
             _tichetService = tichetService;
         }
 
+        #endregion
+
+        #region Handlere
+
+        /// <summary>
+        /// Valideaza campurile introduse, creeaza un cont nou si redirectioneaza catre login.
+        /// </summary>
         private void buttonInregistrare_Click(object sender, EventArgs e)
         {
             try
@@ -71,8 +94,7 @@ namespace SportBet.UI
                     return;
                 }
 
-                MessageBox.Show("Cont creat cu succes!", "Succes",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Cont creat cu succes!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 var formLogin = new FormLogin(_authService, _dataService, _tichetService);
                 formLogin.Show();
@@ -81,14 +103,18 @@ namespace SportBet.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Eroare",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        /// Inchide formularul de inregistrare si revine la ecranul anterior.
+        /// </summary>
         private void buttonInapoi_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        #endregion
     }
 }

@@ -2,5 +2,6 @@
   <Project Path="SportBet.Models/SportBet.Models.csproj" Id="da8bdebc-4885-48db-9d54-e9d57bb8d65e" />
   <Project Path="SportBet.Repositories/SportBet.Repositories.csproj" Id="4a298d99-0993-40bf-8163-f1e11c8d55a5" />
   <Project Path="SportBet.Services/SportBet.Services.csproj" Id="b979dd75-a9cd-4b27-a111-e1dc061ea9d3" />
+  <Project Path="SportBet.Tests/SportBet.Tests.csproj" Id="e7769f29-86a7-4cae-bccf-370849444a15" />
   <Project Path="SportBet.UI/SportBet.UI.csproj" Id="f0cb7c2d-e37d-4621-b65f-d4c644f395ff" />
 </Solution>

@@ -1,4 +1,4 @@
-﻿// Autor: Echipa SportBet
+﻿// Autor: Hothazie Mircea
 // Functionalitate: Implementarea repository-ului pentru meciuri.
 //                  Stocheaza si gestioneaza meciurile in memorie,
 //                  implementand contractul definit de IMeciRepository.

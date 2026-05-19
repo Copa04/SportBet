@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Copacinschi David-Ioan
 // Functionalitate: Clasa model pentru un pariu individual plasat pe un meci.
 //                  Un pariu face parte dintr-un tichet si are asociat o cota si un tip de selectie.
 

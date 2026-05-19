@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Copacinschi David-Ioan
 // Functionalitate: Clasa model pentru un tichet de pariere.
 //                  Un tichet grupeaza mai multe pariuri individuale si calculeaza
 //                  cota totala si castigul potential.

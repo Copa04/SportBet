@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Postolache Matei
 // Functionalitate: Serviciu pentru autentificarea si gestionarea sesiunii utilizatorului.
 //                  Implementeaza pattern-ul Singleton pentru sesiunea activa.
 
@@ -159,7 +159,6 @@ namespace SportBet.Services
             if (string.IsNullOrWhiteSpace(prenume) || string.IsNullOrWhiteSpace(nume))
                 return false;
 
-            // Daca emailul s-a schimbat, verificam sa nu fie folosit de altcineva
             if (!string.Equals(email, UtilizatorCurent.Email, StringComparison.OrdinalIgnoreCase))
             {
                 if (_utilizatorRepo.EmailExista(email))

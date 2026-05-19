@@ -1,4 +1,4 @@
-﻿// Autor: Echipa SportBet
+﻿// Autor: Hothazie Mircea
 // Functionalitate: Implementarea repository-ului pentru utilizatori.
 //                  Stocheaza si gestioneaza utilizatorii in memorie,
 //                  implementand contractul definit de IUtilizatorRepository.
@@ -129,7 +129,7 @@ namespace SportBet.Repositories
             if (utilizator.Id == 0)
                 utilizator.Id = GetNextId();
             else if (GetById(utilizator.Id) != null)
-                return false; // ID duplicat
+                return false; 
 
             _utilizatori.Add(utilizator);
             return true;

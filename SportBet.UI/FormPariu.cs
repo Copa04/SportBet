@@ -1,4 +1,4 @@
-﻿// Autor: Echipa SportBet
+﻿// Autor: Maxim Cezar-Andrei
 // Functionalitate: Formular pentru plasarea unui pariu pe un meci selectat.
 //                  Permite selectarea tipului de pariu (1/X/2), introducerea
 //                  mizei si afisarea castigului potential inainte de confirmare.
@@ -21,27 +21,20 @@ namespace SportBet.UI
     {
         #region Campuri private
 
-        /// <summary>Utilizatorul curent autentificat.</summary>
         private readonly Utilizator _utilizatorCurent;
-
-        /// <summary>Meciul pe care se plaseaza pariul.</summary>
         private readonly Meci _meci;
-
-        /// <summary>Serviciul central de date.</summary>
         private readonly DataService _dataService;
-
-        /// <summary>Cota selectata curent (1, X sau 2).</summary>
         private double _cotaSelectata;
-
-        /// <summary>Tipul selectiei curente ("1", "X" sau "2").</summary>
         private string _tipSelectie;
 
         #endregion
 
-        /// <summary>Pariul creat, disponibil dupa inchiderea formularului.</summary>
+        #region Campuri publice
         public Pariu PariulCreat { get; private set; }
 
         public decimal MizaIntrodusa { get; private set; }
+
+        #endregion
 
         #region Constructor
 
@@ -76,8 +69,7 @@ namespace SportBet.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare la incarcarea formularului: {ex.Message}",
-                    "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Eroare la incarcarea formularului: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -94,7 +86,6 @@ namespace SportBet.UI
             labelMeci.Text = $"{_meci.EchipaGazda} — {_meci.EchipaOaspete}";
             labelData.Text = _meci.DataOra.ToString("dd.MM.yyyy HH:mm");
 
-            // Afiseaza cotele pe fiecare RadioButton
             radioButtonGazda.Text = $"1 — Gazda  ({_meci.CotaGazda:F2})";
             radioButtonEgal.Text = $"X — Egal  ({_meci.CotaEgalitate:F2})";
             radioButtonOaspete.Text = $"2 — Oaspete  ({_meci.CotaOaspete:F2})";
@@ -115,7 +106,6 @@ namespace SportBet.UI
 
             if (_utilizatorCurent.Sold < 1)
             {
-                // Sold insuficient — dezactiveaza butonul de plasare
                 numericUpDownMiza.Minimum = 0;
                 numericUpDownMiza.Maximum = 0;
                 numericUpDownMiza.Value = 0;
@@ -146,7 +136,7 @@ namespace SportBet.UI
 
         #endregion
 
-        #region Handlere RadioButton
+        #region Handlere
 
         /// <summary>
         /// Selectie schimbata pe "1 — Gazda".
@@ -187,10 +177,6 @@ namespace SportBet.UI
             }
         }
 
-        #endregion
-
-        #region Handler NumericUpDown
-
         /// <summary>
         /// La schimbarea mizei, recalculeaza castigul potential.
         /// </summary>
@@ -198,10 +184,6 @@ namespace SportBet.UI
         {
             ActualizeazaCastigPotential();
         }
-
-        #endregion
-
-        #region Handlere butoane
 
         /// <summary>
         /// Plaseaza pariul dupa confirmare:
@@ -212,7 +194,6 @@ namespace SportBet.UI
         {
             try
             {
-                // Validare selectie
                 if (string.IsNullOrEmpty(_tipSelectie))
                 {
                     MessageBox.Show("Selectati tipul pariului (1, X sau 2).",
@@ -222,7 +203,6 @@ namespace SportBet.UI
 
                 decimal miza = numericUpDownMiza.Value;
 
-                // Validare sold suficient
                 if (!_utilizatorCurent.AreSuficienteFonduri(miza))
                 {
                     MessageBox.Show("Sold insuficient pentru aceasta miza.",
@@ -232,7 +212,6 @@ namespace SportBet.UI
 
                 decimal castigPotential = Math.Round(miza * (decimal)_cotaSelectata, 2);
 
-                // Confirmare plasare
                 DialogResult confirmare = MessageBox.Show(
                     $"Confirmi plasarea pariului?\n\n" +
                     $"Meci: {_meci.EchipaGazda} — {_meci.EchipaOaspete}\n" +
@@ -254,8 +233,7 @@ namespace SportBet.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare la plasarea pariului: {ex.Message}",
-                    "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Eroare la plasarea pariului: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

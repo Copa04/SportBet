@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Hothazie Mircea
 // Functionalitate: Interfata pentru repository-ul de utilizatori.
 //                  Defineste contractul de acces la datele utilizatorilor
 //                  conform Repository Pattern.

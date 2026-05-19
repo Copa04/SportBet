@@ -1,7 +1,6 @@
-﻿// Autor: Echipa SportBet
+﻿// Autor: Maxim Cezar-Andrei
 // Functionalitate: Formular pentru depunerea de fonduri in contul utilizatorului curent.
 //                  Permite introducerea unei sume intre 1 si 10000 RON si actualizeaza soldul.
-
 
 using System;
 using System.Collections.Generic;
@@ -21,10 +20,7 @@ namespace SportBet.UI
     {
         #region Campuri private
 
-        /// <summary>Utilizatorul curent autentificat.</summary>
         private readonly Utilizator _utilizatorCurent;
-
-        /// <summary>Serviciul central de date.</summary>
         private readonly DataService _dataService;
 
         #endregion
@@ -32,10 +28,10 @@ namespace SportBet.UI
         #region Constructor
 
         /// <summary>
-        /// Initializeaza formularul cu utilizatorul curent si serviciul de date.
+        /// Initializeaza FormDepunere cu utilizatorul curent si serviciul de date.
         /// </summary>
-        /// <param name="utilizator">Utilizatorul logat.</param>
-        /// <param name="dataService">Instanta DataService din Program.cs.</param>
+        /// <param name="utilizator">Utilizatorul logat, pasat din FormPrincipal.</param>
+        /// <param name="dataService">Instanta DataService creata in Program.cs.</param>
         public FormDepunere(Utilizator utilizator, DataService dataService)
         {
             InitializeComponent();

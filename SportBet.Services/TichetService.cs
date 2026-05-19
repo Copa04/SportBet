@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Postolache Matei
 // Functionalitate: Serviciu pentru crearea, gestionarea si decontarea tichetelor de pariuri.
 //                  Coordoneaza logica de business dintre repository-urile de tichete,
 //                  meciuri si utilizatori.
@@ -67,11 +67,9 @@ namespace SportBet.Services
 
             Utilizator utilizator = _utilizatorRepo.GetById(utilizatorId);
 
-            // Scade miza din soldul utilizatorului
             utilizator.Retrage(miza);
             _utilizatorRepo.ActualizeazaSold(utilizatorId, utilizator.Sold);
 
-            // Construieste tichetul (Id = 0, repository-ul genereaza automat)
             Tichet tichet = new Tichet(0, utilizatorId, miza);
 
             foreach (Pariu pariu in pariuri)
@@ -104,7 +102,6 @@ namespace SportBet.Services
             if (tichet == null)
                 return null;
 
-            // Incarca MeciAsociat pentru fiecare pariu
             foreach (Pariu pariu in tichet.Pariuri)
             {
                 if (pariu.MeciAsociat == null)
@@ -130,7 +127,6 @@ namespace SportBet.Services
             if (tichet.Status != StatusTichet.InAsteptare)
                 return false;
 
-            // Verifica ca niciun meci nu a inceput inca
             foreach (Pariu pariu in tichet.Pariuri)
             {
                 Meci meci = _meciRepo.GetById(pariu.MeciId);
@@ -142,7 +138,6 @@ namespace SportBet.Services
                     return false;
             }
 
-            // Returneaza miza utilizatorului
             Utilizator utilizator = _utilizatorRepo.GetById(tichet.UtilizatorId);
 
             if (utilizator == null)
@@ -186,7 +181,6 @@ namespace SportBet.Services
         /// <returns>True daca decontarea a reusit, altfel false.</returns>
         public bool DeconteazaTichet(int tichetId)
         {
-            // Incarcam tichetul cu meciurile asociate pentru decontare corecta
             Tichet tichet = GetTichetById(tichetId);
 
             if (tichet == null)
@@ -200,7 +194,6 @@ namespace SportBet.Services
 
             tichet.Deconteaza();
 
-            // Crediteaza utilizatorul cu castigul efectiv (0 daca a pierdut)
             if (tichet.CastigEfectiv > 0)
             {
                 Utilizator utilizator = _utilizatorRepo.GetById(tichet.UtilizatorId);
@@ -298,7 +291,6 @@ namespace SportBet.Services
             if (!utilizator.AreSuficienteFonduri(miza))
                 return false;
 
-            // Verifica ca fiecare meci este disponibil pentru pariere
             foreach (Pariu pariu in pariuri)
             {
                 Meci meci = _meciRepo.GetById(pariu.MeciId);
@@ -306,7 +298,6 @@ namespace SportBet.Services
                 if (meci == null || !meci.EsteDisponibilPariere())
                     return false;
 
-                // Verifica ca tipul selectiei este valid pentru meciul respectiv
                 if (meci.GetCotaForTip(pariu.TipSelectie) == 0)
                     return false;
             }

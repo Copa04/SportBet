@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Hothazie Mircea
 // Functionalitate: Interfata pentru repository-ul de tichete.
 //                  Defineste contractul de acces la datele tichetelor si pariurilor
 //                  conform Repository Pattern.

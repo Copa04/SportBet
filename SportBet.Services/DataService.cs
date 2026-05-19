@@ -1,4 +1,4 @@
-// Autor: Echipa SportBet
+// Autor: Postolache Matei
 // Functionalitate: Serviciu central care incarca si salveaza datele din/in fisiere JSON locale
 //                  si initializeaza repository-urile la pornirea aplicatiei.
 

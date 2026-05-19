@@ -1,4 +1,4 @@
-﻿// Autor: Echipa SportBet
+﻿// Autor: Hothazie Mircea
 // Functionalitate: Implementarea repository-ului pentru tichete.
 //                  Stocheaza si gestioneaza tichetele in memorie,
 //                  implementand contractul definit de ITichetRepository.
@@ -142,7 +142,7 @@ namespace SportBet.Repositories
             if (tichet.Id == 0)
                 tichet.Id = _nextId++;
             else if (GetById(tichet.Id) != null)
-                return false; // ID duplicat
+                return false; 
 
             _tichete.Add(tichet);
             return true;
