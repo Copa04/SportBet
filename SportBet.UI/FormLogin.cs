@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,9 +74,11 @@ namespace SportBet.UI
             Application.Exit();
         }
 
+
         private void buttonAjutor_Click(object sender, EventArgs e)
         {
-            Help.ShowHelp(this, "SportBet.chm");
+            string path = Path.Combine(Application.StartupPath, "Help", "SportBet.chm");
+            Help.ShowHelp(this, path);
         }
     }
 }
